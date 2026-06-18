@@ -226,6 +226,14 @@ export class WindowController implements IWindowController {
     return this.application.config.title
   }
 
+  get windowTitle(): string {
+    if (typeof this.override.windowTitle !== 'undefined') {
+      return this.override.windowTitle
+    }
+
+    return this.title
+  }
+
   get icon() {
     if (typeof this.override.icon !== 'undefined') {
       return this.override.icon
@@ -480,6 +488,14 @@ export class WindowController implements IWindowController {
     this.override.title = undefined
   }
 
+  public setWindowTitleOverride(value: undefined | string) {
+    this.override.windowTitle = value
+  }
+
+  public resetWindowTitleOverride() {
+    this.override.windowTitle = undefined
+  }
+
   // menu
 
   public menu: any[] = []
@@ -524,6 +540,8 @@ export class WindowController implements IWindowController {
       // override
       setTitleOverride: this.setTitleOverride.bind(this),
       resetTitleOverride: this.resetTitleOverride.bind(this),
+      setWindowTitleOverride: this.setWindowTitleOverride.bind(this),
+      resetWindowTitleOverride: this.resetWindowTitleOverride.bind(this),
     }
   }
 }

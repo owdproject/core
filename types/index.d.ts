@@ -71,7 +71,8 @@ interface ApplicationConfig {
 
 interface ApplicationConfigProvide {
   name: string
-  command: string
+  entry: string
+  command?: string
 }
 
 type IApplicationMeta = { [key: string]: any }
@@ -129,6 +130,8 @@ export interface IWindowController {
   // common
   get title(): string
 
+  get windowTitle(): string
+
   get icon(): string | undefined
 
   // sizes
@@ -185,6 +188,8 @@ export interface IWindowController {
     // override
     setTitleOverride(title: string | undefined): void
     resetTitleOverride(): void
+    setWindowTitleOverride(title: string | undefined): void
+    resetWindowTitleOverride(): void
   }
 
   /** Payload restored with window state (e.g. explorer cwd in `path`). */
@@ -257,6 +262,7 @@ interface WindowStoredState {
 
 interface WindowOverride {
   title?: undefined | string
+  windowTitle?: undefined | string
   icon?: undefined | string
 }
 
