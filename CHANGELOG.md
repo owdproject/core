@@ -3,7 +3,6 @@
 ### 🚀 Features
 
 - Pinia store ids use `desktop/*` and `desktop/application/*` instead of legacy `owd/desktop/*` and `owd/application/*`.
-- Automatic one-shot localStorage migration on first client boot when `@owdproject/module-persistence` is installed (legacy keys are copied then removed).
 
 ### 📚 Documentation
 

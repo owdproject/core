@@ -117,10 +117,8 @@ Pinia store ids were renamed to match the `desktop-*` runtime naming. CSS classe
 | `owd/application/${appId}/windows` | `desktop/application/${appId}/windows` |
 | `owd/application/${appId}/meta` | `desktop/application/${appId}/meta` |
 
-When `@owdproject/module-persistence` is installed, persisted state is migrated automatically on the first client boot (`desktop-shell-init` runs `migratePersistedStoreIds` before Pinia hydration). No app or theme code changes are required.
-
-**Breaking only for tools that read raw localStorage keys** (e.g. custom debug scripts expecting `owd/desktop`). In-browser state is preserved via migration.
+When `@owdproject/module-persistence` is installed, kernel stores opt in to IndexedDB persistence under the new ids above. There is no runtime migration from legacy `owd/*` keys — fresh or reset local state is expected for pregenerated deployments.
 
 `pnpm validate:modules` (or `desktop validate`) warns when a package still uses legacy `meta.name: "owd-*"` or Pinia `defineStore` ids containing `owd/`.
 
-Extension modules with their own persisted stores should use the `desktop/<module>/…` id pattern (e.g. `@owdproject/module-fs` explorer: `desktop/module-fs/explorer`). Core migrates only kernel ids (`owd/desktop`, `owd/application/*`); extension packages may omit a localStorage migration — users who already had legacy keys may see a one-time reset of that module's persisted prefs.
+Extension modules with their own persisted stores should use the `desktop/<module>/…` id pattern (e.g. `@owdproject/module-fs` explorer: `desktop/module-fs/explorer`).
