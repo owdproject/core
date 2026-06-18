@@ -4,8 +4,9 @@
 
 - **@owdproject/core** no longer installs PrimeVue. Module-time authoring lives in `kit/` (not auto-imported). Shell composables, utils, and hint components use `runtime/` (`composables`, `utils`, `constants`, `components/Desktop/`).
 - **@owdproject/module-fs** — ZenFS virtual filesystem + headless explorer (composables, stores, utils; no `.vue`).
-- **@owdproject/kit-primevue** — Nuxt PrimeVue module, Tailwind v3 + `tailwindcss-primeui`, `createDesktopDialogs`, optional explorer UI (`DesktopExplorer*`; `{ explorer: false }` for dialogs only).
-- **Tailwind** — no longer installed by core; `@owdproject/kit-primevue` (`desktop-kit-primevue`) installs `@nuxtjs/tailwindcss` during kit `setup` and merges registered content globs on the `tailwindcss:config` hook (after theme/apps have called `registerTailwindPath`).
+- **@owdproject/kit-primevue** — Nuxt PrimeVue module, `tailwindcss-primeui`, `createDesktopDialogs`, optional explorer UI (`DesktopExplorer*`; `{ explorer: false }` for dialogs only). Installs Tailwind today (duplicate of kit-tailwind; target: depend on `@owdproject/kit-tailwind`).
+- **@owdproject/kit-tailwind** — optional kit for Tailwind content registration (`registerTailwindPath`, `@nuxtjs/tailwindcss`). Canonical import for apps/themes with utility classes. Used alone on Nuxt UI stacks; PV themes should layer PrimeVue on top.
+- **Tailwind** — no longer installed by core. Register globs from `@owdproject/kit-tailwind/kit/registerTailwindPath`; PV themes also run `installModule('@owdproject/kit-primevue')` which installs Tailwind + PrimeUI preset.
 - **@owdproject/kit-theme**, **kit-fs**, **kit-explorer** — deprecated (empty Nuxt modules). **No Vite import shims** — update sources to explicit paths below.
 
 ## Stacks (what is optional)
@@ -58,22 +59,22 @@ Or rely on kit-primevue client plugin (no theme plugin needed).
 | `useFileSystemExplorer` | `useExplorerWindow` |
 | `@owdproject/core/runtime/utils/defineDesktop*` | `@owdproject/core/kit/authoring` |
 | `@owdproject/core/runtime/utils/utilDesktop` (`defineDesktopApp`) | `@owdproject/core/kit/defineDesktopApp` |
-| `registerTailwindPath` from core | `@owdproject/kit-primevue/kit/registerTailwindPath` (same function names; import path only) |
-| `defineDesktopTheme(definition, import.meta.url)` (auto Tailwind) | `defineDesktopTheme(definition)` + `registerThemeTailwindPath(nuxt, import.meta.url)` after kit-primevue |
+| `registerTailwindPath` from core | `@owdproject/kit-tailwind/kit/registerTailwindPath` (canonical; also re-exported from kit-primevue during transition) |
+| `defineDesktopTheme(definition, import.meta.url)` (auto Tailwind) | `defineDesktopTheme(definition)` + `registerThemeTailwindPath(nuxt, import.meta.url)` from kit-tailwind after theme installs its UI kit |
 | `runtime/utils/utilHasDesktop` | `runtime/composables/useDesktopManifest` (`hasDesktop*`) |
 | `runtime/utils/windowMaximizeLayout` | `runtime/utils/utilWindowMaximizeLayout` |
 | `runtime/utils/utilWindow` | `runtime/utils/utilWindowControllerAdapter` |
 
 ### Tailwind content registration
 
-`@nuxtjs/tailwindcss` is installed by kit-primevue during kit `setup` (not by core). Register globs during each module's `setup`; kit merges them on `tailwindcss:config` when Tailwind loads its config (after all module setups, on `modules:done`).
+`@nuxtjs/tailwindcss` is installed by `kit-tailwind` or `kit-primevue` during kit `setup` (not by core). Register globs during each module's `setup`; the active kit merges them on `tailwindcss:config`.
 
 | Caller | API |
 |--------|-----|
-| Theme `module.ts` (after `installModule('@owdproject/kit-primevue')`) | `registerThemeTailwindPath(nuxt, import.meta.url)` — defaults to `runtime/components/**` and `runtime/apps/**` |
-| Built-in theme apps, extension apps/modules with utility classes | `registerTailwindPath(nuxt, resolve('./path/to/glob'))` from `@owdproject/kit-primevue/kit/registerTailwindPath` |
+| Theme `module.ts` (after installing its UI kit) | `registerThemeTailwindPath(nuxt, import.meta.url)` from `@owdproject/kit-tailwind/kit/registerTailwindPath` |
+| Apps / extension modules with utility classes | `registerTailwindPath(nuxt, resolve('./path/to/glob'))` from `@owdproject/kit-tailwind/kit/registerTailwindPath` + `"@owdproject/kit-tailwind"` in app `dependencies` |
 
-Kit-primevue merges registered paths into `content.files` (not a plain array — that breaks the generated PostCSS template). Duplicate globs are deduplicated. In dev, `[desktop-kit-primevue] Tailwind content: N paths` is logged when the config hook runs.
+Registered paths merge into `content.files` (not a plain array — that breaks the generated PostCSS template). Duplicate globs are deduplicated.
 
 ## module-fs
 

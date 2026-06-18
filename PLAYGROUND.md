@@ -23,13 +23,25 @@ package/
 - `src/runtime/plugin.ts` calls `defineDesktopApp` from `@owdproject/core/kit/defineDesktopApp`
 - Plugin `name`: `desktop-<slug>-register` (required for `dependsOn` ordering)
 - `src/module.ts` `meta.name`: `desktop-app-<slug>`
-- Tailwind utilities in Vue: `registerTailwindPath` from `@owdproject/kit-primevue/kit/registerTailwindPath`
+- Tailwind utilities in Vue: `registerTailwindPath` from `@owdproject/kit-tailwind/kit/registerTailwindPath`
+- `"@owdproject/kit-tailwind": "workspace:*"` in app **`dependencies`** (build-time; not replaced by the playground theme)
 - Playground lists the app in `desktop.config.ts` `apps: ['@owdproject/app-<slug>']`
+
+### Theme UI stack vs app Tailwind
+
+| Concern | Package | Who declares it |
+|---------|---------|-----------------|
+| Tailwind content globs (`registerTailwindPath`) | `kit-tailwind` | **App** (and theme) `module.ts` + app `dependencies` |
+| PrimeVue auto-import (`InputText`, `Button`, …) | `kit-primevue` | **PV theme** via `installModule('@owdproject/kit-primevue')` — not all themes |
+| Nuxt UI components | `kit-nuxt-ui` | **`theme-nuxt`** — no PrimeVue |
+
+PrimeVue markup in an app requires a PV theme at runtime. `@owdproject/theme-nuxt` does not install `kit-primevue`.
 
 ## Themes (`@owdproject/theme-*`)
 
 - `defineDesktopTheme` from `@owdproject/core`
-- `installModule('@owdproject/kit-primevue')` then `registerThemeTailwindPath(nuxt, import.meta.url)`
+- **PrimeVue themes:** `installModule('@owdproject/kit-primevue')` then `registerThemeTailwindPath(nuxt, import.meta.url)` from `@owdproject/kit-tailwind/kit/registerTailwindPath`
+- **Nuxt UI themes:** install `@owdproject/kit-nuxt-ui` (optional) — no PrimeVue
 - `meta.name`: `desktop-theme-<slug>`
 
 ## Extension modules (`@owdproject/module-*`)
