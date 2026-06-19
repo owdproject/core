@@ -23,6 +23,8 @@ function resolveActivePinia() {
   return undefined
 }
 
+let isBooted = false
+
 /**
  * Register a desktop app. Queues until Pinia is active when theme/app plugins
  * run before shell-init (legacy published apps using synchronous setup).
@@ -30,7 +32,7 @@ function resolveActivePinia() {
 export async function defineDesktopApp(config: ApplicationConfig) {
   if (import.meta.server) return undefined
 
-  if (resolveActivePinia()) {
+  if (isBooted && resolveActivePinia()) {
     const applicationManager = useApplicationManager()
     return applicationManager.defineApp(config.id, config)
   }
@@ -40,6 +42,7 @@ export async function defineDesktopApp(config: ApplicationConfig) {
 }
 
 export async function flushPendingDesktopApps() {
+  isBooted = true
   if (pendingDesktopApps.length === 0) return
 
   if (!resolveActivePinia()) return

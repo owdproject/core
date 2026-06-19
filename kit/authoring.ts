@@ -205,7 +205,8 @@ async function loadModuleDescriptor(
   try {
     const imported = await import(modulePath)
     return (imported as { default?: ModuleLike }).default ?? imported
-  } catch {
+  } catch (e: any) {
+    console.warn(`[@owdproject/core] Failed to load module descriptor for "${modulePath}":`, e.message || e)
     return undefined
   }
 }
@@ -268,11 +269,24 @@ export function defineDesktopModule(
   return defineNuxtModule({
     ...definition,
     async setup(options, nuxt) {
-      setDesktopExtensionConfig(
-        nuxt,
-        configKey,
+      const pub = (nuxt.options.runtimeConfig.public ??= {}) as {
+        desktop?: Record<string, unknown>
+      }
+      const desktop = (pub.desktop ??= {})
+      const userConfig = desktop[configKey]
+
+      // Merge userConfig (wins) with options (defaults / inline)
+      const merged = defu(
+        userConfig && typeof userConfig === 'object' ? userConfig : {},
         options as Record<string, unknown>,
       )
+
+      // Mutate options in place so userSetup receives the fully merged options
+      Object.assign(options, merged)
+
+      // Set/update the merged config on public.desktop
+      desktop[configKey] = options
+
       if (typeof userSetup === 'function') {
         return userSetup(options, nuxt)
       }
@@ -308,10 +322,15 @@ export function defineDesktopTheme(
       const pub = (nuxt.options.runtimeConfig.public ??= {}) as {
         desktop?: Record<string, unknown>
       }
+      
+      // Automatically merge userConfig (pub.desktop) with theme defaults (options)
       pub.desktop = defu(
         (pub.desktop ?? {}) as Record<string, unknown>,
         options as Record<string, unknown>,
       )
+
+      // Mutate options in place so userSetup receives the fully merged options
+      Object.assign(options, pub.desktop)
 
       if (typeof userSetup === 'function') {
         return userSetup(options, nuxt)
