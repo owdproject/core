@@ -70,7 +70,7 @@
     },
     "./package.json": "./package.json",
     "./kit/*": {
-      "types": "./kit/*",
+      "types": "./types/index.d.ts",
       "development": "./kit/*",
       "import": "./kit/*",
       "default": "./kit/*"
@@ -135,5 +135,9 @@
     "sanitize.css": "^13.0.0",
     "sass": "^1.99.0",
     "vue-resizable": "^2.1.7"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.2",
+    "typescript": "~6.0.3"
   }
 }

@@ -4,7 +4,8 @@ import {
   addComponentsDir,
   addImportsDir,
   installModule,
-  addPlugin
+  addPlugin,
+  resolvePath
 } from '@nuxt/kit'
 import { defu } from 'defu'
 import {
@@ -42,6 +43,13 @@ export default defineNuxtModule({
   },
   async setup(_options, _nuxt) {
     const { resolve } = createResolver(import.meta.url)
+
+    let resolvedNanoid: string | null = null
+    try {
+      resolvedNanoid = await resolvePath('nanoid', { url: import.meta.url })
+    } catch (e) {
+      // ignore
+    }
 
     // Required for Nuxt 4 dev (playgrounds, module graphs): avoids
     // "Vite Node IPC socket path not configured" when using @nuxt/kit pipelines.
@@ -149,6 +157,12 @@ export default defineNuxtModule({
           viteConfig.css.preprocessorOptions || {}
         viteConfig.css.preprocessorOptions.scss = {
           api: 'modern-compiler'
+        }
+
+        viteConfig.optimizeDeps = viteConfig.optimizeDeps || {}
+        viteConfig.optimizeDeps.include = viteConfig.optimizeDeps.include || []
+        if (resolvedNanoid && !viteConfig.optimizeDeps.include.includes(resolvedNanoid)) {
+          viteConfig.optimizeDeps.include.push(resolvedNanoid)
         }
       })
     }

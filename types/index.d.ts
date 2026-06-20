@@ -7,7 +7,8 @@ declare module 'nuxt/schema' {
   }
 }
 
-interface IApplicationManager {
+declare global {
+  interface IApplicationManager {
   apps: Map<string, IApplicationController>
 
   get appsEntries(): Reactive<ApplicationEntry[]>
@@ -472,10 +473,17 @@ interface DefaultAppsConfig {
   [key: string]: DefaultAppConfig
 }
 
-/** Stored default for a feature: which app and which entry key to use. */
-interface DefaultAppConfig {
-  applicationId: string
-  entry: string
+  /** Stored default for a feature: which app and which entry key to use. */
+  interface DefaultAppConfig {
+    applicationId: string
+    entry: string
+  }
+
+  module '*.vue' {
+    import type { DefineComponent } from 'vue'
+    const component: DefineComponent<{}, {}, any>
+    export default component
+  }
 }
 
 export function defineDesktopApp(config: ApplicationConfig)
