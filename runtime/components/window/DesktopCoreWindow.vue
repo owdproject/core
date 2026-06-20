@@ -163,6 +163,7 @@ const shouldFitParent = computed(
 <template>
   <vue-resizable
     ref="windowResizableController"
+    :data-owd-window-id="windowController?.state?.id"
     :class="classes"
     :width="windowController?.size.width"
     :height="windowController?.size.height"

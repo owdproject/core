@@ -1,5 +1,6 @@
 import { nextTick } from 'vue'
 import { useApplicationManager } from '../composables/useApplicationManager'
+import { centerWindowWhenReady } from './utilWindowCenter'
 
 export function normalizeApplicationConfig(
   config: ApplicationConfig,
@@ -70,6 +71,7 @@ export function autoStartPlaygroundApps(
     if (window) {
       window.actions.setActive(true)
       window.actions.bringToFront()
+      await centerWindowWhenReady(window, maxAttempts, intervalMs)
     }
 
     return true
