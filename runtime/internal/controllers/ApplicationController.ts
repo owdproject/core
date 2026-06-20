@@ -222,14 +222,27 @@ export class ApplicationController implements IApplicationController {
           : typeof configHeight === 'string' && /^\d+$/.test(configHeight)
             ? Number(configHeight)
             : 240
+      // Calculate vertical centering
       const centerY = (screenHeight - layoutHeight) / 2
       const positionY =
         windowConfig.position?.y !== undefined
           ? window.scrollY + windowConfig.position.y
           : window.scrollY + centerY
+
+      // Calculate horizontal centering based on screen width and window width
+      const screenWidth = window.innerWidth
+      const configWidth = windowConfig.size?.width
+      const layoutWidth =
+        typeof configWidth === 'number'
+          ? configWidth
+          : typeof configWidth === 'string' && /^\d+$/.test(configWidth)
+            ? Number(configWidth)
+            : 400
+      const centerX = (screenWidth - layoutWidth) / 2
+      const baseX = windowConfig.position?.x ?? centerX
+
       const cascadeStep = 40
       const cascadeOffset = this.getWindowsByModel(model).length * cascadeStep
-      const baseX = windowConfig.position?.x ?? 100
       const desktopWindowStore = useDesktopWindowStore()
       const initialZ = desktopWindowStore.incrementPositionZ()
 
