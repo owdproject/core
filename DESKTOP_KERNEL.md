@@ -71,7 +71,7 @@ flowchart TB
 | 10 | **Workspaces — state & API** | `useDesktopStore` (overview flag, z-index seed, default-apps map). `useDesktopWorkspaceStore`: `list`, `active`, `overview`, `createWorkspace`, `removeWorkspace`, `resolveWorkspaceFallback`. `utilWorkspaceWindows` / `countWindowsOnWorkspace`. | Theme reads workspace list for tray, indicators, overview entry. | `runtime/stores/storeDesktop.ts`, `runtime/stores/storeDesktopWorkspace.ts`, `runtime/utils/utilWorkspaceWindows.ts` |
 | 11 | **Workspaces — interaction** | `useWorkspaceManager` (overview keyboard, HTML5 drop between desktops, `removeWorkspace` with window migration). `useWorkspaceOverviewLiveScale`, `useWorkspaceOverviewCapture`, `utilCaptureElementToCanvas`. | Theme overview UI (cards, wallpaper preview, remove button, scale shell). Workspace removal rules: see **Window lifecycle** below. | `runtime/composables/useWorkspaceManager.ts`, `runtime/composables/useWorkspaceOverviewLiveScale.ts`, `runtime/composables/useWorkspaceOverviewCapture.ts` |
 | 12 | **Kernel Vue components** | `DesktopCore`, `DesktopApplicationRender`, `DesktopApplicationWindowsRender`, `DesktopWindow` / `DesktopWindowNav` / `DesktopWindowContent`, `DesktopBackground`, `DesktopTime`, snap/edge hint bases. | `Desktop.vue` wraps `DesktopCore`; theme chrome around window primitives. | `runtime/components/` (`prefix: 'Desktop'` in core `module.ts`; source files e.g. `window/Window.vue`) |
-| 13 | **Dialogs** | Contract `desktopDialogProvider`, `useDesktopDialogs` (theme inject or browser fallback). Inject key: `runtime/constants/desktopShellKeys.ts`. | PV implementation: `@owdproject/kit-primevue` (`createDesktopDialogs`). | `runtime/dialogs/desktopDialogProvider.ts`, `runtime/composables/useDesktopDialogs.ts` |
+| 13 | **Dialogs** | Contract `desktopDialogProvider`, `useDesktopDialogs` (theme inject or browser fallback). Inject key: `runtime/constants/desktopShellKeys.ts`. | PV: `@owdproject/kit-primevue` registers `ConfirmationService` + provider via `setupDesktopDialogProvider` (default `createDesktopDialogs`). Themes mount `<ConfirmDialog group="delete|about">` in `Desktop.vue`, not only in Explorer. Custom provider: call helper with a factory (e.g. win11). | `runtime/dialogs/desktopDialogProvider.ts`, `runtime/composables/useDesktopDialogs.ts`, `@owdproject/kit-primevue/runtime/dialogs/setupDesktopDialogProvider` |
 | 14 | **Secondary shell services** | `useDesktopDefaultAppsStore` + `useDesktopManager` default-app routing. `useDesktopVolumeStore` (master volume). `useTerminalManager` (command registry; `app-terminal` registers commands). | Theme volume control, terminal UI, “open with” flows. | `runtime/stores/storeDesktopDefaultApps.ts`, `runtime/stores/storeDesktopVolume.ts`, `runtime/composables/useTerminalManager.ts` |
 | 15 | **Global shell behaviour** | `useBlockNonInputContextMenu` (desktop-style context menu policy). `useDesktopStore` persistence when `@owdproject/module-persistence` is installed. Pinia ids: `desktop`, `desktop/workspace`, `desktop/window`, `desktop/volume`, `desktop/defaultApps`, `desktop/application/${appId}/windows`, `desktop/application/${appId}/meta`. | Theme chooses where to call context-menu blocking; boot/shutdown pages. | `runtime/composables/useBlockNonInputContextMenu.ts`, `runtime/stores/storeDesktop.ts`, `runtime/stores/storeIds.ts` |
 
@@ -190,7 +190,7 @@ Keep these packages **separate** — do not merge explorer UI kits into `module-
 | Package | Layer |
 |---------|--------|
 | `@owdproject/core` | Kernel + shell composables/utils/components (flat `runtime/`) |
-| `@owdproject/kit-primevue` | PrimeVue Nuxt module, `createDesktopDialogs`, PV explorer chrome |
+| `@owdproject/kit-primevue` | PrimeVue Nuxt module, `setupDesktopDialogProvider`, `createDesktopDialogs`, PV explorer chrome |
 | `@owdproject/module-fs` | ZenFS virtual filesystem + headless explorer (`defineDesktopModule`, `configKey: 'fs'`). Only package that imports `@zenfs/*`. |
 | `@owdproject/module-persistence` | Pinia persistence (optional) |
 | `@owdproject/app-terminal` | Terminal app (`configKey: 'terminal'`) |
@@ -207,7 +207,7 @@ Deprecated (empty modules only): `@owdproject/kit-theme`, `@owdproject/kit-fs`, 
 
 Themed file explorer: `module-fs` in `desktop.config.ts` → `@owdproject/kit-primevue` in theme → theme-specific explorer shell.
 
-Dialog and maximize contracts live in core (`runtime/dialogs/desktopDialogProvider.ts`, `useDesktopDialogs`, `useToggleWindowMaximize`, `useDesktopWindowStore.workArea`). PV dialog **implementation**: `@owdproject/kit-primevue`.
+Dialog and maximize contracts live in core (`runtime/dialogs/desktopDialogProvider.ts`, `useDesktopDialogs`, `useToggleWindowMaximize`, `useDesktopWindowStore.workArea`). PV dialog **implementation**: `@owdproject/kit-primevue` (`setupDesktopDialogProvider` in the kit plugin; themes supply `<ConfirmDialog>` UI in `Desktop.vue`).
 
 ## Migrating packages (3.3.2)
 
