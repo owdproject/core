@@ -8,6 +8,7 @@ import { debugLog, debugError } from '../../utils/utilDebug'
 import { useDesktopDefaultAppsStore } from '../../stores/storeDesktopDefaultApps'
 import { useDesktopWorkspaceStore } from '../../stores/storeDesktopWorkspace'
 import { useDesktopWindowStore } from '../../stores/storeDesktopWindow'
+import { resolveInitialWindowPosition } from '../../utils/utilWindowCenter'
 import { shallowRef } from 'vue'
 import { unref } from 'vue'
 
@@ -214,37 +215,15 @@ export class ApplicationController implements IApplicationController {
       const windowConfig: WindowConfig = this.config.windows[
         model
       ] as WindowConfig
-      const screenHeight = window.innerHeight
-      const configHeight = windowConfig.size?.height
-      const layoutHeight =
-        typeof configHeight === 'number'
-          ? configHeight
-          : typeof configHeight === 'string' && /^\d+$/.test(configHeight)
-            ? Number(configHeight)
-            : 240
-      // Calculate vertical centering
-      const centerY = (screenHeight - layoutHeight) / 2
-      const positionY =
-        windowConfig.position?.y !== undefined
-          ? window.scrollY + windowConfig.position.y
-          : window.scrollY + centerY
-
-      // Calculate horizontal centering based on screen width and window width
-      const screenWidth = window.innerWidth
-      const configWidth = windowConfig.size?.width
-      const layoutWidth =
-        typeof configWidth === 'number'
-          ? configWidth
-          : typeof configWidth === 'string' && /^\d+$/.test(configWidth)
-            ? Number(configWidth)
-            : 400
-      const centerX = (screenWidth - layoutWidth) / 2
-      const baseX = windowConfig.position?.x ?? centerX
-
       const cascadeStep = 40
       const cascadeOffset = this.getWindowsByModel(model).length * cascadeStep
       const desktopWindowStore = useDesktopWindowStore()
       const initialZ = desktopWindowStore.incrementPositionZ()
+      const initialPosition = resolveInitialWindowPosition({
+        windowConfig,
+        workArea: desktopWindowStore.workArea,
+        cascadeOffset,
+      })
 
       const nextWindows = {
         ...this.storeWindows.windows,
@@ -255,8 +234,8 @@ export class ApplicationController implements IApplicationController {
             active: true,
             focused: false,
             position: {
-              x: baseX + cascadeOffset,
-              y: positionY + cascadeOffset,
+              x: initialPosition.x,
+              y: initialPosition.y,
               z: initialZ,
             },
             createdAt: +new Date(),

@@ -1,10 +1,27 @@
-import type { DesktopWorkAreaRect, IWindowController } from '@owdproject/core'
-import {
-  EMPTY_DESKTOP_WORK_AREA,
-  useDesktopWindowStore,
-} from '../stores/storeDesktopWindow'
+import type { DesktopWorkAreaRect, WindowConfig } from '@owdproject/core'
+import { EMPTY_DESKTOP_WORK_AREA } from '../stores/storeDesktopWindow'
 
-export const OWD_WINDOW_ID_ATTR = 'data-owd-window-id'
+export function parseWindowConfigSize(
+  value: number | string | undefined,
+  fallback: number,
+): number {
+  if (typeof value === 'number') {
+    return value
+  }
+
+  if (typeof value === 'string' && /^\d+$/.test(value)) {
+    return Number(value)
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value)
+    if (!Number.isNaN(parsed)) {
+      return parsed
+    }
+  }
+
+  return fallback
+}
 
 export function resolveDesktopWorkArea(
   workArea: DesktopWorkAreaRect = EMPTY_DESKTOP_WORK_AREA,
@@ -25,16 +42,6 @@ export function resolveDesktopWorkArea(
   }
 }
 
-export function findWindowElement(windowId: string): HTMLElement | null {
-  if (typeof document === 'undefined') {
-    return null
-  }
-
-  return document.querySelector<HTMLElement>(
-    `[${OWD_WINDOW_ID_ATTR}="${windowId}"]`,
-  )
-}
-
 export function computeCenteredPosition(
   workArea: DesktopWorkAreaRect,
   windowWidth: number,
@@ -46,61 +53,36 @@ export function computeCenteredPosition(
   }
 }
 
-export function centerWindowInWorkArea(
-  win: IWindowController,
-  workArea?: DesktopWorkAreaRect,
-): boolean {
-  const el = findWindowElement(win.state.id)
-  if (!el) {
-    return false
+export function resolveInitialWindowPosition(options: {
+  windowConfig: WindowConfig
+  workArea?: DesktopWorkAreaRect
+  cascadeOffset?: number
+}): { x: number; y: number } {
+  const { windowConfig, cascadeOffset = 0 } = options
+  const workArea = resolveDesktopWorkArea(options.workArea)
+  const layoutWidth = parseWindowConfigSize(windowConfig.size?.width, 400)
+  const layoutHeight = parseWindowConfigSize(windowConfig.size?.height, 240)
+  const hasExplicitPosition =
+    windowConfig.position?.x !== undefined ||
+    windowConfig.position?.y !== undefined
+
+  if (!hasExplicitPosition) {
+    const { x, y } = computeCenteredPosition(workArea, layoutWidth, layoutHeight)
+    return { x: x + cascadeOffset, y: y + cascadeOffset }
   }
 
-  const { width, height } = el.getBoundingClientRect()
-  if (width <= 0 || height <= 0) {
-    return false
+  const scrollY =
+    typeof globalThis !== 'undefined' && 'scrollY' in globalThis
+      ? globalThis.scrollY
+      : 0
+  const baseX = windowConfig.position?.x ?? 0
+  const baseY =
+    windowConfig.position?.y !== undefined
+      ? scrollY + windowConfig.position.y
+      : scrollY
+
+  return {
+    x: baseX + cascadeOffset,
+    y: baseY + cascadeOffset,
   }
-
-  const area = resolveDesktopWorkArea(workArea)
-  if (area.width <= 0 || area.height <= 0) {
-    return false
-  }
-
-  const { x, y } = computeCenteredPosition(area, width, height)
-  win.actions.setPosition({ x, y })
-  return true
-}
-
-export async function centerWindowWhenReady(
-  win: IWindowController,
-  maxAttempts = 80,
-  intervalMs = 50,
-): Promise<boolean> {
-  const desktopWindowStore = useDesktopWindowStore()
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    await new Promise<void>((resolve) => {
-      if (typeof requestAnimationFrame !== 'undefined') {
-        requestAnimationFrame(() => resolve())
-      } else {
-        resolve()
-      }
-    })
-
-    if (centerWindowInWorkArea(win, desktopWindowStore.workArea)) {
-      await new Promise((resolve) => setTimeout(resolve, intervalMs))
-      await new Promise<void>((resolve) => {
-        if (typeof requestAnimationFrame !== 'undefined') {
-          requestAnimationFrame(() => resolve())
-        } else {
-          resolve()
-        }
-      })
-      centerWindowInWorkArea(win, desktopWindowStore.workArea)
-      return true
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, intervalMs))
-  }
-
-  return false
 }

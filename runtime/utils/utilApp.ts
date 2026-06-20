@@ -1,6 +1,6 @@
 import { nextTick } from 'vue'
 import { useApplicationManager } from '../composables/useApplicationManager'
-import { centerWindowWhenReady } from './utilWindowCenter'
+import { useDesktopWindowStore } from '../stores/storeDesktopWindow'
 
 export function normalizeApplicationConfig(
   config: ApplicationConfig,
@@ -34,6 +34,24 @@ export interface AutoStartPlaygroundApp {
   windowModel?: string
 }
 
+async function waitForDesktopWorkArea(
+  maxAttempts: number,
+  intervalMs: number,
+): Promise<boolean> {
+  const desktopWindowStore = useDesktopWindowStore()
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const { width, height } = desktopWindowStore.workArea
+    if (width > 0 && height > 0) {
+      return true
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, intervalMs))
+  }
+
+  return false
+}
+
 /**
  * Auto-starts one or more applications in a playground environment.
  * Delays execution until the Nuxt app is mounted and the desktop shell is ready,
@@ -62,16 +80,15 @@ export function autoStartPlaygroundApps(
     app.closeAllWindows()
     app.storeWindows.windows = {}
 
-    // Execute application command (launches the app entry/window)
+    await waitForDesktopWorkArea(maxAttempts, intervalMs)
+
     await applicationManager.execAppCommand(appConfig.id, appConfig.entry)
 
-    // Bring first window matching the model to focus
     const model = appConfig.windowModel ?? 'main'
     const window = app.getFirstWindowByModel(model)
     if (window) {
       window.actions.setActive(true)
       window.actions.bringToFront()
-      await centerWindowWhenReady(window, maxAttempts, intervalMs)
     }
 
     return true
@@ -100,4 +117,3 @@ export function autoStartPlaygroundApps(
     )
   })
 }
-
