@@ -181,6 +181,7 @@ Contract tests: `packages/core/test/windowController.contract.test.ts`, `useWork
 3. Use `provide/inject` for `windowController` only inside theme `Window*.vue` wrappers.
 4. Install `@owdproject/module-fs` when needed for VFS and headless explorer APIs. PV explorer UI: `@owdproject/kit-primevue`.
 5. Prefer `defineDesktopTheme` so shell defaults merge with `defu(public.desktop, themeDefaults)`.
+6. Style `padded` window contents using the `.owd-window__content--padded` class inside the theme's `DesktopWindowContent.vue` wrapper to ensure applications requiring padding have proper spacing.
 
 ## Extension packages
 
