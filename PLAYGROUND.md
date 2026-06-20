@@ -25,7 +25,10 @@ package/
 - `src/module.ts` `meta.name`: `desktop-app-<slug>`
 - Tailwind utilities in Vue: `registerTailwindPath` from `@owdproject/kit-tailwind/kit/registerTailwindPath`
 - `"@owdproject/kit-tailwind": "workspace:*"` in app **`dependencies`** (build-time; not replaced by the playground theme)
+- Do **not** add `@owdproject/kit-primevue` to app `dependencies` — PrimeVue auto-import comes from the PV theme at runtime
+- `exports["."].development: "./src/module.ts"` in `package.json` (monorepo dev without re-stubbing after every edit)
 - Playground lists the app in `desktop.config.ts` `apps: ['@owdproject/app-<slug>']`
+- Omit `windows.*.position` in `app.config.ts` to center on open; set explicit `size.width` / `size.height` (not only `minHeight`)
 
 ### Theme UI stack vs app Tailwind
 
@@ -62,6 +65,16 @@ PrimeVue markup in an app requires a PV theme at runtime. `@owdproject/theme-nux
 
 Do **not** add a `prepare` script on publishable packages.
 
+Lint, ESLint, and Vitest are **optional** — not required for publishable apps/themes/modules or for CI below.
+
+## Playground auto-launch (apps)
+
+Optional `playground/app/plugins/launch-<slug>.client.ts`:
+
+- `dependsOn: ['desktop-app-<slug>-register']`
+- Call `autoStartPlaygroundApps(nuxtApp, [{ id, entry, windowModel }])` from `@owdproject/core`
+- Do **not** guard with `if (!import.meta.dev) return` — static generate and GitHub Pages need the same path
+
 ## Validate
 
 From package root:
@@ -78,6 +91,23 @@ pnpm run validate:modules
 ```
 
 See [`MIGRATION_3.4.md`](./MIGRATION_3.4.md) for import path changes (kit-primevue, module-fs).
+
+## CI and GitHub Pages (standalone repos)
+
+Use **Node 22**. For `@owdproject/app-*` / `@owdproject/theme-*` published as their own GitHub repo, prefer workflows that:
+
+1. Checkout `owdproject/client` (workspace deps) and overlay this package under `client/apps/…`, `client/themes/…`, or `client/packages/…`
+2. Checkout sibling packages the playground needs (e.g. `kit-tailwind`, `kit-primevue`, `theme-nova`, `module-fs`)
+3. `pnpm install` in `client/`
+4. In the package dir: `pnpm run dev:prepare` → `pnpm run validate` → `pnpm run dev:generate` with `NUXT_APP_BASE_URL=/<repo-slug>/`
+
+**Required for CI:** `dev:prepare`, `validate`, `dev:generate` (smoke build).
+
+**Not required:** separate lint or test jobs, `eslint`, `vitest`, or `nypm` install in the app repo alone (breaks `workspace:*`).
+
+Minimal `ci.yml`: one job `validate-and-build` with the steps above. `pages.yml`: same build job + `deploy-pages`.
+
+Themes/modules with a self-contained playground (no client overlay) may use a single-repo checkout when they do not depend on `workspace:*` packages.
 
 ## Desktop control panel (TUI)
 
