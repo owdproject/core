@@ -319,3 +319,28 @@ export function defineDesktopTheme(
     },
   } as NuxtModule)
 }
+
+/**
+ * Checks if a desktop module, app, or theme is registered in desktop.config.ts.
+ * This is useful during theme or module setup hooks when Nuxt's own module installation
+ * sequence hasn't finished yet (meaning `hasNuxtModule` would return false).
+ */
+export function hasDesktopModule(nuxt: Nuxt, packageName: string): boolean {
+  const desktop = nuxt.options.runtimeConfig.public.desktop as {
+    theme?: string
+    modules?: string[]
+    apps?: string[]
+  } | undefined
+
+  if (!desktop) return false
+
+  const contains = (item: string | undefined) =>
+    item ? String(item).includes(packageName) : false
+
+  return (
+    contains(desktop.theme) ||
+    (desktop.modules?.some(contains) ?? false) ||
+    (desktop.apps?.some(contains) ?? false)
+  )
+}
+
