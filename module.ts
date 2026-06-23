@@ -99,7 +99,6 @@ export default defineNuxtModule({
       apps?: string[]
       modules?: string[]
     }
-
     _nuxt.options.runtimeConfig.public.desktop = desktop
 
     {

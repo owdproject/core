@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import {
   defineNuxtModule,
   installModule,
+  resolvePath,
   type NuxtModule,
 } from '@nuxt/kit'
 import type { Nuxt } from '@nuxt/schema'
@@ -192,10 +193,28 @@ export function mergeDesktopExtensionConfig(
 type ModuleLike = {
   meta?: { configKey?: string }
   default?: { meta?: { configKey?: string } }
+  getMeta?: () => Promise<{ configKey?: string } | undefined>
 }
 
-function readConfigKey(mod: ModuleLike | undefined): string | undefined {
-  const key = mod?.meta?.configKey ?? mod?.default?.meta?.configKey
+async function readConfigKey(mod: ModuleLike | undefined): Promise<string | undefined> {
+  if (!mod) return undefined
+
+  // Try direct meta properties
+  let meta = mod.meta ?? mod.default?.meta
+
+  // Try getMeta function
+  if (!meta) {
+    const getMeta = mod.getMeta ?? (mod as any).default?.getMeta
+    if (typeof getMeta === 'function') {
+      try {
+        meta = await getMeta()
+      } catch (e) {
+        console.warn('[@owdproject/core] failed to call getMeta():', e)
+      }
+    }
+  }
+
+  const key = meta?.configKey
   return typeof key === 'string' && key.length > 0 ? key : undefined
 }
 
@@ -203,9 +222,11 @@ async function loadModuleDescriptor(
   modulePath: string,
 ): Promise<ModuleLike | undefined> {
   try {
-    const imported = await import(modulePath)
+    const resolvedPath = await resolvePath(modulePath)
+    const imported = await import(resolvedPath)
     return (imported as { default?: ModuleLike }).default ?? imported
-  } catch {
+  } catch (e) {
+    console.warn(`[@owdproject/core] loadModuleDescriptor failed for "${modulePath}":`, e)
     return undefined
   }
 }
@@ -221,7 +242,7 @@ export async function installDesktopPackage(
   desktop?: Record<string, unknown>,
 ): Promise<void> {
   const descriptor = await loadModuleDescriptor(modulePath)
-  const configKey = readConfigKey(descriptor)
+  const configKey = await readConfigKey(descriptor)
 
   if (configKey && desktop) {
     const slice = desktop[configKey]
