@@ -135,5 +135,8 @@
     "sanitize.css": "^13.0.0",
     "sass": "^1.99.0",
     "vue-resizable": "^2.1.7"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.2"
   }
 }
