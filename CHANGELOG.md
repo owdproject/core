@@ -1,3 +1,34 @@
+## v3.5.0
+
+
+### 🚀 Enhancements
+
+- **window:** Separate windowTitle override from application title ([c73d46c](https://github.com/owdproject/core/commit/c73d46c))
+- Center windows horizontally by default and add comments ([3c071bf](https://github.com/owdproject/core/commit/3c071bf))
+- **core:** Add autoStartPlaygroundApps utility and update theme obligations ([92eaacc](https://github.com/owdproject/core/commit/92eaacc))
+- Add hasDesktopModule utility ([ddb3cbf](https://github.com/owdproject/core/commit/ddb3cbf))
+
+### 🩹 Fixes
+
+- **core:** Drop persisted store id migration and decouple shell init ([f4c82d6](https://github.com/owdproject/core/commit/f4c82d6))
+- **core:** Center playground windows using measured DOM bounds ([fdd254f](https://github.com/owdproject/core/commit/fdd254f))
+- **core:** Resolve async configKey using getMeta ([a9fcebd](https://github.com/owdproject/core/commit/a9fcebd))
+
+### 💅 Refactors
+
+- **core:** Center windows pre-open using workArea and config size ([b5551af](https://github.com/owdproject/core/commit/b5551af))
+
+### 📖 Documentation
+
+- Clarify kit-tailwind vs kit-primevue for apps and themes ([55174fb](https://github.com/owdproject/core/commit/55174fb))
+- Document setupDesktopDialogProvider and theme ConfirmDialog hosts ([f3b37fa](https://github.com/owdproject/core/commit/f3b37fa))
+- Document CI checkout pattern and playground launch conventions ([df8802c](https://github.com/owdproject/core/commit/df8802c))
+- Expand PLAYGROUND validate table and app alignment checklist ([36363fc](https://github.com/owdproject/core/commit/36363fc))
+
+### 🏡 Chore
+
+- **core:** Dismantle nx configuration and clean up ([8962ff3](https://github.com/owdproject/core/commit/8962ff3))
+
 ## 3.4.1 (2026-06-09)
 
 ### 🚀 Features
