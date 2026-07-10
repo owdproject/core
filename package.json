@@ -134,6 +134,8 @@
     "pinia": "^3.0.4",
     "sanitize.css": "^13.0.0",
     "sass": "^1.99.0",
+    "shellwords": "^0.1.1",
+    "getopts": "^2.3.0",
     "vue-resizable": "^2.1.7"
   },
   "devDependencies": {

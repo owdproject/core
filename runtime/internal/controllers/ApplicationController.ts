@@ -94,11 +94,11 @@ export class ApplicationController implements IApplicationController {
 
     // store
 
-    if (this.storeWindows.$persistedState) {
+    if (this.storeWindows.$persistedState && typeof this.storeWindows.$persistedState.isReady === 'function') {
       await this.storeWindows.$persistedState.isReady()
     }
 
-    if (this.storeMeta.$persistedState) {
+    if (this.storeMeta.$persistedState && typeof this.storeMeta.$persistedState.isReady === 'function') {
       await this.storeMeta.$persistedState.isReady()
     }
 

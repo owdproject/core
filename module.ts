@@ -84,9 +84,7 @@ export default defineNuxtModule({
 
     assertValidDesktopUserConfig(clientConfig, resolvedConfig.file)
 
-    if (!clientConfig.theme) {
-      clientConfig.theme = '@owdproject/theme-nova'
-    }
+
 
     const configRecord = clientConfig as Record<string, unknown>
     warnDesktopConfigKeys(configRecord, resolvedConfig.file)

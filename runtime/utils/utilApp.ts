@@ -72,7 +72,7 @@ export function autoStartPlaygroundApps(
 
     const app = applicationManager.getAppById(appConfig.id)!
 
-    if (app.storeWindows.$persistedState) {
+    if (app.storeWindows.$persistedState && typeof app.storeWindows.$persistedState.isReady === 'function') {
       await app.storeWindows.$persistedState.isReady()
     }
 

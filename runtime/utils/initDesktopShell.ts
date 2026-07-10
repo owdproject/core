@@ -67,7 +67,7 @@ export function initDesktopShell() {
   const runtimeConfig = useRuntimeConfig()
   const desktopDefaultAppsStore = useDesktopDefaultAppsStore()
 
-  if (desktopStore.$persistedState) {
+  if (desktopStore.$persistedState && typeof desktopStore.$persistedState.isReady === 'function') {
     desktopStore.$persistedState.isReady().then(() => {
       desktopWorkspaceStore.setupWorkspaces()
     })
