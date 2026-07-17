@@ -520,4 +520,29 @@ export function hasDesktopExtension(
   key: string,
 ): import('vue').ComputedRef<boolean>
 
+export interface DesktopNotification {
+  id: string
+  title: string
+  body: string
+  icon?: string
+  appId?: string
+  timestamp: number
+  read: boolean
+}
+
+export function useDesktop(): {
+  store: any
+  config: import('vue').ComputedRef<DesktopConfig>
+  workspace: any
+  volume: any
+  notifications: {
+    list: import('vue').ComputedRef<DesktopNotification[]>
+    add(notification: { title: string; body: string; icon?: string; appId?: string }): DesktopNotification
+    remove(id: string): void
+    clear(): void
+    markAsRead(id: string): void
+    markAllAsRead(): void
+  }
+}
+
 export {}
