@@ -1,19 +1,25 @@
 import { computed } from 'vue'
-import { useDesktopStore } from '../stores/storeDesktop'
 import { useDesktopNotificationsStore } from '../stores/storeNotifications'
 import { useDesktopWorkspaceStore } from '../stores/storeDesktopWorkspace'
 import { useDesktopVolumeStore } from '../stores/storeDesktopVolume'
 import { useDesktopConfig } from './useDesktopConfig'
+import { useDesktopIdentity } from './useDesktopIdentity'
+import { useDesktopSession } from './useDesktopSession'
+import { useApplicationManager } from './useApplicationManager'
+import { useTerminalManager } from './useTerminalManager'
 
 export function useDesktop() {
-  const store = useDesktopStore()
   const config = useDesktopConfig()
   const workspace = useDesktopWorkspaceStore()
-  const volume = useDesktopVolumeStore()
+  const volumeStore = useDesktopVolumeStore()
   const notificationsStore = useDesktopNotificationsStore()
+  const identity = useDesktopIdentity()
+  const session = useDesktopSession()
+  const apps = useApplicationManager()
+  const terminal = useTerminalManager()
 
   const notifications = {
-    list: computed(() => notificationsStore.list),
+    list: notificationsStore.list,
     add: notificationsStore.add,
     remove: notificationsStore.remove,
     clear: notificationsStore.clear,
@@ -21,11 +27,19 @@ export function useDesktop() {
     markAllAsRead: notificationsStore.markAllAsRead,
   }
 
+  const volume = {
+    master: computed(() => volumeStore.master),
+    setMaster: volumeStore.setMasterVolume,
+  }
+
   return {
-    store,
     config,
     workspace,
     volume,
     notifications,
+    identity,
+    session,
+    apps,
+    terminal,
   }
 }

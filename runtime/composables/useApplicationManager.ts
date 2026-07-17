@@ -1,9 +1,21 @@
-import { reactive, markRaw, computed } from 'vue'
+import { reactive, markRaw, computed, type ComputedRef } from 'vue'
 import { ApplicationController } from '../internal/controllers/ApplicationController'
 import { normalizeApplicationConfig } from '../utils/utilApp'
 import { debugLog } from '../utils/utilDebug'
 import * as shellwords from 'shellwords'
 import getopts from "getopts"
+
+export type SortBy =
+  | 'title'
+  | 'category'
+  | ((
+      a: ApplicationEntryWithInherited,
+      b: ApplicationEntryWithInherited,
+    ) => number)
+export type Visibility =
+  | 'primary'
+  | 'all'
+  | ((entry: ApplicationEntryWithInherited) => boolean)
 
 const apps = reactive(new Map<string, IApplicationController>())
 
@@ -266,6 +278,35 @@ export function useApplicationManager() {
     return categorizedApps
   })
 
+  function getSortedEntries(
+    sortBy: SortBy = 'title',
+    visibility: Visibility = 'primary',
+  ): ComputedRef<ApplicationEntryWithInherited[]> {
+    return computed(() => {
+      const currentEntries = [...appsEntries.value]
+
+      const filtered =
+        typeof visibility === 'function'
+          ? currentEntries.filter(visibility)
+          : visibility === 'primary'
+            ? currentEntries.filter((e) => e.visibility !== 'secondary')
+            : currentEntries
+
+      const sorted =
+        typeof sortBy === 'function'
+          ? filtered.sort(sortBy)
+          : sortBy === 'title'
+            ? filtered.sort((a, b) =>
+                (a.title || '').localeCompare(b.title || ''),
+              )
+            : filtered.sort((a, b) =>
+                (a.category || '').localeCompare(b.category || ''),
+              )
+
+      return sorted
+    })
+  }
+
   return {
     defineApp,
     isAppDefined,
@@ -281,5 +322,6 @@ export function useApplicationManager() {
     windowsOpened,
     appCategories,
     appsByCategory,
+    getSortedEntries,
   }
 }

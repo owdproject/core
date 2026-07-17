@@ -54,7 +54,7 @@ function guestIdentity(defaultHome: string): ShellIdentity {
  * Shell session identity (display + VFS home). Auth modules call {@link setShellIdentity}
  * after login; defaults to Guest.
  */
-export function useDesktopShellIdentity() {
+export function useDesktopIdentity() {
   function ensureIdentity(): ShellIdentity {
     if (!identity.value) {
       identity.value = guestIdentity(resolveDefaultHome())

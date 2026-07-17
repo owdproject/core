@@ -530,19 +530,38 @@ export interface DesktopNotification {
   read: boolean
 }
 
+export function useDesktopIdentity(): {
+  userId: import('vue').ComputedRef<string>
+  displayName: import('vue').ComputedRef<string>
+  avatarUrl: import('vue').ComputedRef<string | null>
+  userHome: import('vue').ComputedRef<string>
+  isGuest: import('vue').ComputedRef<boolean>
+  setShellIdentity(partial: Partial<import('../runtime/composables/useDesktopIdentity').ShellIdentity>): void
+  clearShellIdentity(): void
+}
+
 export function useDesktop(): {
-  store: any
   config: import('vue').ComputedRef<DesktopConfig>
-  workspace: any
-  volume: any
+  workspace: ReturnType<typeof import('../runtime/stores/storeDesktopWorkspace').useDesktopWorkspaceStore>
+  volume: {
+    master: import('vue').ComputedRef<number>
+    setMaster(value: number): void
+  }
   notifications: {
-    list: import('vue').ComputedRef<DesktopNotification[]>
+    list: import('vue').Ref<DesktopNotification[]>
     add(notification: { title: string; body: string; icon?: string; appId?: string }): DesktopNotification
     remove(id: string): void
     clear(): void
     markAsRead(id: string): void
     markAllAsRead(): void
   }
+  identity: ReturnType<typeof useDesktopIdentity>
+  session: {
+    shuttingDown: import('vue').Ref<boolean>
+    initiateShutdownToStart(): void
+  }
+  apps: ReturnType<typeof import('../runtime/composables/useApplicationManager').useApplicationManager>
+  terminal: ReturnType<typeof import('../runtime/composables/useTerminalManager').useTerminalManager>
 }
 
 export {}
