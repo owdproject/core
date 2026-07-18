@@ -1,7 +1,7 @@
 {
   "name": "@owdproject/core",
-  "version": "3.5.0",
-  "description": "Nuxt Desktop module for browser desktop experiences (windows, shell, apps)",
+  "version": "4.0.0",
+  "description": "Open Web Desktop core — wrapper for nuxt-desktop",
   "keywords": [
     "nuxt",
     "nuxt-module",
@@ -26,117 +26,25 @@
     "url": "https://github.com/owdproject"
   },
   "type": "module",
-  "types": "types/index.d.ts",
-  "files": [
-    "dist",
-    "kit",
-    "runtime",
-    "types",
-    "index.ts",
-    "module.ts",
-    "package.json",
-    "README.md",
-    "DESKTOP_KERNEL.md",
-    "CHANGELOG.md",
-    "MIGRATION_3.3.2.md",
-    "MIGRATION_3.4.md",
-    "PLAYGROUND.md"
-  ],
-  "scripts": {
-    "dev": "pnpm run dev:prepare",
-    "dev:prepare": "nuxt-module-build build --stub",
-    "build:module": "nuxt-module-build build",
-    "prepack": "nuxt-module-build build",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
-  },
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "default": "./index.ts"
+      "import": "nuxt-desktop",
+      "default": "nuxt-desktop"
     },
     "./module": {
-      "types": "./dist/types.d.mts",
-      "development": "./module.ts",
-      "import": "./module.ts",
-      "default": "./module.ts"
+      "import": "nuxt-desktop/module",
+      "default": "nuxt-desktop/module"
     },
     "./nuxt": {
-      "types": "./dist/types.d.mts",
-      "development": "./module.ts",
-      "import": "./module.ts",
-      "default": "./module.ts"
+      "import": "nuxt-desktop/module",
+      "default": "nuxt-desktop/module"
     },
-    "./package.json": "./package.json",
-    "./kit/*": {
-      "types": "./kit/*",
-      "development": "./kit/*",
-      "import": "./kit/*",
-      "default": "./kit/*"
-    },
-    "./runtime/composables/*": {
-      "types": "./runtime/composables/*",
-      "development": "./runtime/composables/*",
-      "import": "./runtime/composables/*",
-      "default": "./runtime/composables/*"
-    },
-    "./runtime/constants/*": {
-      "types": "./runtime/constants/*",
-      "development": "./runtime/constants/*",
-      "import": "./runtime/constants/*",
-      "default": "./runtime/constants/*"
-    },
-    "./runtime/dialogs/*": {
-      "types": "./runtime/dialogs/*",
-      "development": "./runtime/dialogs/*",
-      "import": "./runtime/dialogs/*",
-      "default": "./runtime/dialogs/*"
-    },
-    "./runtime/utils/*": {
-      "types": "./runtime/utils/*",
-      "development": "./runtime/utils/*",
-      "import": "./runtime/utils/*",
-      "default": "./runtime/utils/*"
-    },
-    "./runtime/stores/*": {
-      "types": "./runtime/stores/*",
-      "development": "./runtime/stores/*",
-      "import": "./runtime/stores/*",
-      "default": "./runtime/stores/*"
-    },
-    "./runtime/components/*": {
-      "types": "./runtime/components/*",
-      "development": "./runtime/components/*",
-      "import": "./runtime/components/*",
-      "default": "./runtime/components/*"
-    },
-    "./runtime/types/*": {
-      "types": "./runtime/types/*",
-      "development": "./runtime/types/*",
-      "import": "./runtime/types/*",
-      "default": "./runtime/types/*"
-    }
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "dev": "echo 'Development happens in nuxt-desktop'"
   },
   "dependencies": {
-    "@nuxt/fonts": "^0.14.0",
-    "@nuxt/icon": "^2.2.1",
-    "@nuxt/kit": "^4.4.4",
-    "@nuxtjs/i18n": "^10.3.0",
-    "@pinia/nuxt": "^0.11.3",
-    "@vueuse/components": "^14.3.0",
-    "@vueuse/core": "^14.3.0",
-    "@vueuse/nuxt": "^14.3.0",
-    "defu": "^6.1.4",
-    "mitt": "^3.0.1",
-    "nanoid": "^5.1.11",
-    "nuxt": "^4.4.4",
-    "pinia": "^3.0.4",
-    "sanitize.css": "^13.0.0",
-    "sass": "^1.99.0",
-    "vue-resizable": "^2.1.7"
-  },
-  "devDependencies": {
-    "@nuxt/module-builder": "^1.0.2"
+    "nuxt-desktop": "workspace:*"
   }
 }

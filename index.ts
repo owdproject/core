@@ -1,10 +1,3 @@
-export { defineDesktopApp } from './kit/defineDesktopApp'
-export {
-  defineDesktopConfig,
-  defineDesktopModule,
-  defineDesktopTheme,
-  hasDesktopModule,
-  mergeDesktopExtensionConfig,
-  setDesktopExtensionConfig,
-} from './kit/authoring'
-export { registerDesktopExtension } from './runtime/composables/useDesktop'
+// @owdproject/core — wrapper for nuxt-desktop
+// Re-exports everything from nuxt-desktop transparently
+export * from 'nuxt-desktop'
