@@ -530,6 +530,15 @@ export interface DesktopNotification {
   read: boolean
 }
 
+export interface DesktopTrayIconItem {
+  id: string
+  icon?: string
+  label?: string
+  component?: any
+  meta?: Record<string, any>
+  onClick?: () => void
+}
+
 export function useDesktop(): {
   store: any
   config: import('vue').ComputedRef<DesktopConfig>
@@ -542,6 +551,11 @@ export function useDesktop(): {
     clear(): void
     markAsRead(id: string): void
     markAllAsRead(): void
+  }
+  tray: {
+    items: import('vue').ComputedRef<DesktopTrayIconItem[]>
+    registerIcon(item: DesktopTrayIconItem): void
+    unregisterIcon(id: string): void
   }
 }
 
