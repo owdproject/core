@@ -7,3 +7,4 @@ export {
   mergeDesktopExtensionConfig,
   setDesktopExtensionConfig,
 } from './kit/authoring'
+export { registerDesktopExtension } from './runtime/composables/useDesktop'

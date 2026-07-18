@@ -70,11 +70,12 @@ export function initDesktopShell() {
   if (desktopStore.$persistedState) {
     desktopStore.$persistedState.isReady().then(() => {
       desktopWorkspaceStore.setupWorkspaces()
+      desktopDefaultAppsStore.loadDefaultAppsFromConfig(runtimeConfig)
+      mergeShellKeysOntoAppConfig()
     })
   } else {
     desktopWorkspaceStore.setupWorkspaces()
+    desktopDefaultAppsStore.loadDefaultAppsFromConfig(runtimeConfig)
+    mergeShellKeysOntoAppConfig()
   }
-
-  desktopDefaultAppsStore.loadDefaultAppsFromConfig(runtimeConfig)
-  mergeShellKeysOntoAppConfig()
 }

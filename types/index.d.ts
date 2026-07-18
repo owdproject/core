@@ -539,6 +539,10 @@ export interface DesktopTrayIconItem {
   onClick?: () => void
 }
 
+export interface DesktopExtensions {}
+
+export function registerDesktopExtension(name: string, extension: any): void
+
 export function useDesktop(): {
   store: any
   config: import('vue').ComputedRef<DesktopConfig>
@@ -557,6 +561,26 @@ export function useDesktop(): {
     registerIcon(item: DesktopTrayIconItem): void
     unregisterIcon(id: string): void
   }
-}
+  apps: {
+    list: import('vue').ComputedRef<IApplicationController[]>
+    get(id: string): IApplicationController | undefined
+    isRunning(id: string): boolean
+    launch(id: string, entryKey: string, argument?: string): Promise<IApplicationController | undefined | void>
+    close(id: string): void
+    exec(id: string, rawCommand: string): Promise<CommandOutput>
+  }
+  windows: {
+    list: import('vue').ComputedRef<IWindowController[]>
+    get(windowId: string): IWindowController | undefined
+    close(windowId: string): void
+    closeAll(appId?: string): void
+  }
+  services: {
+    register(id: string, service: any): void
+    unregister(id: string): void
+    get(id: string): any
+    has(id: string): boolean
+  }
+} & DesktopExtensions
 
 export {}

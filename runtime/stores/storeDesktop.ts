@@ -66,6 +66,7 @@ export const useDesktopStore = defineStore(
     // @ts-expect-error
     persistedState: {
       persist: true,
+      paths: ['state.workspace', 'state.volume', 'state.window', 'state.personalization']
     },
   },
 )
