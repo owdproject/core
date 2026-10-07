@@ -7,3 +7,8 @@ dist
 .tmp
 .cache
 *.log
+
+# dev symlinks
+kit
+runtime
+

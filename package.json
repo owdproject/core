@@ -28,23 +28,84 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "nuxt-desktop",
-      "default": "nuxt-desktop"
+      "types": "./dist/types.d.mts",
+      "development": "./src/module.ts",
+      "import": "./dist/module.mjs",
+      "default": "./dist/module.mjs"
     },
     "./module": {
-      "import": "nuxt-desktop/module",
-      "default": "nuxt-desktop/module"
+      "types": "./dist/types.d.mts",
+      "development": "./src/module.ts",
+      "import": "./dist/module.mjs",
+      "default": "./dist/module.mjs"
     },
     "./nuxt": {
-      "import": "nuxt-desktop/module",
-      "default": "nuxt-desktop/module"
+      "types": "./dist/types.d.mts",
+      "development": "./src/module.ts",
+      "import": "./dist/module.mjs",
+      "default": "./dist/module.mjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./kit/*": {
+      "types": "./kit/*",
+      "development": "./kit/*",
+      "import": "./kit/*",
+      "default": "./kit/*"
+    },
+    "./runtime/composables/*": {
+      "types": "./runtime/composables/*",
+      "development": "./runtime/composables/*",
+      "import": "./runtime/composables/*",
+      "default": "./runtime/composables/*"
+    },
+    "./runtime/constants/*": {
+      "types": "./runtime/constants/*",
+      "development": "./runtime/constants/*",
+      "import": "./runtime/constants/*",
+      "default": "./runtime/constants/*"
+    },
+    "./runtime/dialogs/*": {
+      "types": "./runtime/dialogs/*",
+      "development": "./runtime/dialogs/*",
+      "import": "./runtime/dialogs/*",
+      "default": "./runtime/dialogs/*"
+    },
+    "./runtime/utils/*": {
+      "types": "./runtime/utils/*",
+      "development": "./runtime/utils/*",
+      "import": "./runtime/utils/*",
+      "default": "./runtime/utils/*"
+    },
+    "./runtime/stores/*": {
+      "types": "./runtime/stores/*",
+      "development": "./runtime/stores/*",
+      "import": "./runtime/stores/*",
+      "default": "./runtime/stores/*"
+    },
+    "./runtime/components/*": {
+      "types": "./runtime/components/*",
+      "development": "./runtime/components/*",
+      "import": "./runtime/components/*",
+      "default": "./runtime/components/*"
+    },
+    "./runtime/types/*": {
+      "types": "./runtime/types/*",
+      "development": "./runtime/types/*",
+      "import": "./runtime/types/*",
+      "default": "./runtime/types/*"
+    }
   },
+  "main": "./dist/module.mjs",
   "scripts": {
-    "dev": "echo 'Development happens in nuxt-desktop'"
+    "dev:prepare": "nuxt-module-build build --stub",
+    "build": "nuxt-module-build build",
+    "prepack": "nuxt-module-build build"
   },
   "dependencies": {
+    "@nuxt/kit": "^4.4.4",
     "nuxt-desktop": "workspace:*"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.2"
   }
 }
