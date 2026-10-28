@@ -11,4 +11,5 @@ dist
 # dev symlinks
 kit
 runtime
+types
 

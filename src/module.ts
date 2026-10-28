@@ -1,6 +1,8 @@
 import { defineNuxtModule, installModule } from '@nuxt/kit'
+import type { NuxtModule } from '@nuxt/schema'
+import nuxtDesktop from 'nuxt-desktop'
 
-export default defineNuxtModule({
+const module: NuxtModule<any> = defineNuxtModule({
   meta: {
     name: '@owdproject/core',
     configKey: 'desktop',
@@ -10,24 +12,12 @@ export default defineNuxtModule({
     apps: [],
     modules: [],
   },
-  moduleDependencies: {
-    '@pinia/nuxt': {},
-    '@nuxt/fonts': {},
-    '@nuxt/icon': {
-      defaults: {
-        clientBundle: {
-          scan: true,
-          sizeLimitKb: 256,
-        },
-      },
-    },
-    '@vueuse/nuxt': {},
-    '@nuxtjs/i18n': {},
-  },
   async setup(options, _nuxt) {
-    await installModule('nuxt-desktop', options)
+    await installModule(nuxtDesktop, options)
   }
 })
+
+export default module
 
 // Re-export utility functions from nuxt-desktop for desktop.config.ts
 export {
