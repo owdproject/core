@@ -9,7 +9,7 @@ dist
 *.log
 
 # dev symlinks
-kit
-runtime
-types
+/kit
+/runtime
+/types
 

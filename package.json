@@ -1,111 +1,86 @@
 {
   "name": "@owdproject/core",
-  "version": "4.0.0",
-  "description": "Open Web Desktop core — wrapper for nuxt-desktop",
-  "keywords": [
-    "nuxt",
-    "nuxt-module",
-    "nuxt-desktop",
-    "desktop",
-    "web-desktop",
-    "vue",
-    "owd",
-    "open-web-desktop"
-  ],
+  "version": "4.0.0-alpha.3",
+  "description": "Headless desktop engine for the web: windows, applications, workspaces, commands, hooks, IPC, and pointer math",
   "homepage": "https://github.com/owdproject/core#readme",
-  "bugs": {
-    "url": "https://github.com/owdproject/core/issues"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/owdproject/core.git"
   },
-  "license": "MIT",
   "author": {
-    "name": "Open Web Desktop Team",
-    "url": "https://github.com/owdproject"
+    "name": "Diego Villa (@dxlliv)",
+    "url": "https://github.com/dxlliv"
   },
+  "license": "MIT",
   "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "alpha"
+  },
   "exports": {
     ".": {
-      "types": "./dist/types.d.mts",
-      "development": "./src/module.ts",
-      "import": "./dist/module.mjs",
-      "default": "./dist/module.mjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
     },
-    "./module": {
-      "types": "./dist/types.d.mts",
-      "development": "./src/module.ts",
-      "import": "./dist/module.mjs",
-      "default": "./dist/module.mjs"
+    "./machines": {
+      "types": "./dist/machines/index.d.ts",
+      "import": "./dist/machines/index.mjs",
+      "default": "./dist/machines/index.mjs"
     },
-    "./nuxt": {
-      "types": "./dist/types.d.mts",
-      "development": "./src/module.ts",
-      "import": "./dist/module.mjs",
-      "default": "./dist/module.mjs"
+    "./layout": {
+      "types": "./dist/layout/index.d.ts",
+      "import": "./dist/layout/index.mjs",
+      "default": "./dist/layout/index.mjs"
     },
-    "./package.json": "./package.json",
-    "./kit/*": {
-      "types": "./kit/*",
-      "development": "./kit/*",
-      "import": "./kit/*",
-      "default": "./kit/*"
+    "./managers": {
+      "types": "./dist/managers/index.d.ts",
+      "import": "./dist/managers/index.mjs",
+      "default": "./dist/managers/index.mjs"
     },
-    "./runtime/composables/*": {
-      "types": "./runtime/composables/*",
-      "development": "./runtime/composables/*",
-      "import": "./runtime/composables/*",
-      "default": "./runtime/composables/*"
+    "./events": {
+      "types": "./dist/events/index.d.ts",
+      "import": "./dist/events/index.mjs",
+      "default": "./dist/events/index.mjs"
     },
-    "./runtime/constants/*": {
-      "types": "./runtime/constants/*",
-      "development": "./runtime/constants/*",
-      "import": "./runtime/constants/*",
-      "default": "./runtime/constants/*"
+    "./session": {
+      "types": "./dist/session/index.d.ts",
+      "import": "./dist/session/index.mjs",
+      "default": "./dist/session/index.mjs"
     },
-    "./runtime/dialogs/*": {
-      "types": "./runtime/dialogs/*",
-      "development": "./runtime/dialogs/*",
-      "import": "./runtime/dialogs/*",
-      "default": "./runtime/dialogs/*"
+    "./dom": {
+      "types": "./dist/dom/index.d.ts",
+      "import": "./dist/dom/index.mjs",
+      "default": "./dist/dom/index.mjs"
     },
-    "./runtime/utils/*": {
-      "types": "./runtime/utils/*",
-      "development": "./runtime/utils/*",
-      "import": "./runtime/utils/*",
-      "default": "./runtime/utils/*"
-    },
-    "./runtime/stores/*": {
-      "types": "./runtime/stores/*",
-      "development": "./runtime/stores/*",
-      "import": "./runtime/stores/*",
-      "default": "./runtime/stores/*"
-    },
-    "./runtime/components/*": {
-      "types": "./runtime/components/*",
-      "development": "./runtime/components/*",
-      "import": "./runtime/components/*",
-      "default": "./runtime/components/*"
-    },
-    "./runtime/types/*": {
-      "types": "./runtime/types/*",
-      "development": "./runtime/types/*",
-      "import": "./runtime/types/*",
-      "default": "./runtime/types/*"
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.mjs",
+      "default": "./dist/types/index.mjs"
     }
   },
-  "main": "./dist/module.mjs",
-  "scripts": {
-    "dev:prepare": "nuxt-module-build build --stub",
-    "build": "nuxt-module-build build",
-    "prepack": "nuxt-module-build build"
-  },
   "dependencies": {
-    "@nuxt/kit": "^4.6.2",
-    "nuxt-desktop": "workspace:*"
+    "getopts": "^2.3.0",
+    "hookable": "^6.1.2",
+    "nanoid": "^6.0.2",
+    "shellwords": "^1.1.1",
+    "xstate": "^5.33.3"
   },
   "devDependencies": {
-    "@nuxt/module-builder": "^1.0.2"
+    "unbuild": "^3.6.1",
+    "typescript": "~6.0.3",
+    "@types/shellwords": "^0.1.3",
+    "@types/getopts": "^2.3.3"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "prepack": "unbuild"
   }
 }
