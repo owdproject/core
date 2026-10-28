@@ -22,7 +22,8 @@
   ],
   "publishConfig": {
     "access": "public",
-    "tag": "alpha"
+    "tag": "alpha",
+    "registry": "https://registry.npmjs.org/"
   },
   "exports": {
     ".": {
