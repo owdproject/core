@@ -30,7 +30,7 @@
 
 ## Overview
 
-`@owdproject/core` (`4.0.0-alpha.0`) is the pure TypeScript & XState v5 engine behind [Open Web Desktop](https://github.com/owdproject/client).
+`@owdproject/core` (`4.0.0-alpha.0`) is the pure TypeScript & XState v5 engine behind [Open Web Desktop](https://github.com/owdproject/nuxt-desktop).
 
 Completely decoupled from any UI framework, it exposes `createDesktop()`—an isolated desktop kernel encapsulating window management, application lifecycle states (`PID`, `SIGSTOP`, `SIGCONT`, `SIGTERM`, `SIGKILL`), virtual workspaces, CLI command parsing, a 19-event `hookable` lifecycle bus, a pub/sub IPC bus, and a Pointer Events drag/resize engine.
 
