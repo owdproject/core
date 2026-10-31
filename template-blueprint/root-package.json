@@ -1,0 +1,24 @@
+{
+  "name": "owd-client",
+  "private": true,
+  "description": "Open Web Desktop client",
+  "homepage": "https://github.com/owdproject/nuxt-desktop#readme",
+  "bugs": {
+    "url": "https://github.com/owdproject/nuxt-desktop/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owdproject/nuxt-desktop.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Open Web Desktop Team",
+    "url": "https://github.com/owdproject"
+  },
+  "scripts": {
+    "dev": "pnpm --dir desktop dev",
+    "generate": "pnpm --dir desktop generate",
+    "desktop": "pnpm exec desktop"
+  },
+  "devDependencies": {}
+}
