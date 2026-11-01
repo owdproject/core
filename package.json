@@ -1,6 +1,6 @@
 {
   "name": "@owdproject/core",
-  "version": "4.0.0-alpha.3",
+  "version": "4.0.0-alpha.4",
   "description": "Headless desktop engine for the web: windows, applications, workspaces, commands, hooks, IPC, and pointer math",
   "homepage": "https://github.com/owdproject/core#readme",
   "repository": {
