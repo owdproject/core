@@ -168,6 +168,17 @@ export class ApplicationInstance {
     }
   }
 
+  private reuseSingletonWindow(): WindowInstance | undefined {
+    if (!this.config.singleton || this._windowIds.size === 0) return undefined
+    const existingId = Array.from(this._windowIds)[0]!
+    const existingWindow = this.windowManager.get(existingId)
+    if (!existingWindow) return undefined
+
+    existingWindow.unminimize()
+    this.windowManager.focusWindow(existingWindow.id)
+    return existingWindow
+  }
+
   public async launch(entryKey?: string, argument?: string): Promise<boolean> {
     const entries = this.config.entries ?? {}
     const resolvedKey = entryKey ?? Object.keys(entries)[0]
@@ -218,15 +229,8 @@ export class ApplicationInstance {
       size: { width: 640, height: 480 },
     }
 
-    if (this.config.singleton && this._windowIds.size > 0) {
-      const existingId = Array.from(this._windowIds)[0]!
-      const existingWin = this.windowManager.get(existingId)
-      if (existingWin) {
-        existingWin.unminimize()
-        this.windowManager.focusWindow(existingWin.id)
-        return existingWin
-      }
-    }
+    const existingWindow = this.reuseSingletonWindow()
+    if (existingWindow) return existingWindow
 
     const openCtx = {
       app: this,
@@ -237,6 +241,11 @@ export class ApplicationInstance {
     }
     await this.hooks.callHook('window:before-open', openCtx)
     if (openCtx.cancel) return undefined
+
+    // Another opening may have committed while this hook was awaiting.
+    // Check after cancellation and before the synchronous creation/tracking step.
+    const concurrentWindow = this.reuseSingletonWindow()
+    if (concurrentWindow) return concurrentWindow
 
     this.ensureProcessStarted()
     const winId = `${this.id}-${model}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
